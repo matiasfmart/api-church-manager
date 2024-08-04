@@ -1,30 +1,27 @@
-import 'dotenv/config'; // Cargar variables de entorno desde .env
-import sql from 'mssql';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
 
+dotenv.config(); // Cargar variables de entorno desde .env
+
+// Configuración de la conexión a MySQL
 const config = {
+  host: process.env.DB_SERVER,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  server: 'localhost', // Cambia esto por la dirección del servidor de SQL Server si es diferente
-  database: 'church-db',
-  options: {
-    encrypt: true, // Si estás utilizando Azure SQL, asegúrate de establecer esto en true
-    enableArithAbort: true // Esto es importante para evitar errores de tiempo de ejecución en SQL Server
-  }
+  database: process.env.DB_DATABASE
 };
 
-const poolPromise = new sql.ConnectionPool(config)
-  .connect()
-  .then((pool) => {
-    console.log('Conexión exitosa a la base de datos SQL Server');
-    return pool;
+// Crear un pool de conexiones
+const poolPromise = mysql.createPool(config);
+
+poolPromise.getConnection()
+  .then(connection => {
+    console.log('Conexión a MySQL establecida');
+    connection.release(); // Libera la conexión de vuelta al pool
   })
-  .catch((err) => {
-    console.error('Error al conectar a la base de datos:', err);
-    process.exit(1); // Salir del proceso si hay un error de conexión
+  .catch(err => {
+    console.error('Error al conectar a MySQL:', err);
+    throw err;
   });
 
 export default poolPromise;
-
-
-
-// Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;
