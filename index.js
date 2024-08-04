@@ -1,14 +1,22 @@
 import express from 'express';
+import cors from 'cors';
 import authRouter from './src/routes/auth.routes.js';
 import memberRouter from './src/routes/members.routes.js';
-import poolPromise from './src/db/dbConnection.js'; // Importar la conexión
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
+
 app.listen(PORT, () => {
     console.log('Servidor en ejecución en el puerto', PORT);
 });
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.json());
 app.use("/api/v1", authRouter);
