@@ -5,4 +5,4 @@ export const getAllMembers = `SELECT m.id, m.name AS 'name', m.last_name AS 'las
 
 export const getCellOptions = `SELECT c.id, CONCAT(m.name, ' ', m.last_name) AS name FROM cell c JOIN member m ON c.id_guide = m.id`
 
-export const getAreaOptions = `SELECT a.id, CONCAT(m.name, ' ', m.last_name) AS name FROM area a JOIN member m ON a.id_leader = m.id`
+export const getAreaOptions = `SELECT id, name FROM area`
